@@ -7,4 +7,4 @@ inputs:
     default: 'none'
 runs:
   using: 'node19'
-  main: 'index.js'
+  main: 'local_index.js'

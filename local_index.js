@@ -20,6 +20,24 @@ async function gh_api(endpoint, parameters) {
     return await octokit.request(endpoint, local_parameters)
 }
 
+async function create_secret(name, value, public_key) {
+    sodium.ready.then(() => {
+        let binkey = sodium.from_base64(public_key.key, sodium.base64_variants.ORIGINAL)
+        let binsec = sodium.from_string(value)
+
+        let encBytes = sodium.crypto_box_seal(binsec, binkey)
+
+        let output = sodium.to_base64(encBytes, sodium.base64_variants.ORIGINAL)
+        let params = {
+            secret_name: name,
+            encrypted_value: output,
+            key_id: public_key.key_id
+        }
+
+        gh_api('PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}', params)
+    });
+}
+
 
 const credential = new DefaultAzureCredential()
 const keyVaultName = "gh-secrets-awaited-quail"
@@ -45,24 +63,10 @@ const client = new SecretClient(url, credential)
 
     console.log(repo_secrets.data)
 
-    let {key, key_id} = key_response.data
+    let key = key_response.data
 
     secrets.forEach(secret=> {
         console.log(secret)
-        sodium.ready.then(() => {
-            let binkey = sodium.from_base64(key, sodium.base64_variants.ORIGINAL)
-            let binsec = sodium.from_string(secret.value)
-    
-            let encBytes = sodium.crypto_box_seal(binsec, binkey)
-    
-            let output = sodium.to_base64(encBytes, sodium.base64_variants.ORIGINAL)
-            let params = {
-                secret_name: secret.name,
-                encrypted_value: output,
-                key_id: key_id
-            }
-
-            gh_api('PUT /repos/{owner}/{repo}/actions/secrets/{secret_name}', params)
-        });
+        create_secret(secret.name, secret.value, key)
     })
 })();
