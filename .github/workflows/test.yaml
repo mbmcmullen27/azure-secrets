@@ -4,8 +4,8 @@ name: test azure login
 
 on:
   push:
-    tags: 
-      - '**' 
+    branches:
+      - main
     paths-ignore: 
       - README.md
       - .gitignore
