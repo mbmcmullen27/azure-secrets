@@ -24,4 +24,6 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Run w/ Node
-      run: node fetch.js
+      run: |
+        export TOKEN=${{ secrets.GITHUB_TOKEN }}
+        node index.js

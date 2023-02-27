@@ -1,12 +1,11 @@
 const { SecretClient, DefaultSecretPolicy } = require("@azure/keyvault-secrets");
 const { DefaultAzureCredential } = require("@azure/identity");
-const core = require('@actions/core');
-const github = require('@actions/github');
+const { Octokit } = require("@octokit/core");
 
 const sodium = require('libsodium-wrappers')
-const fs = require('fs');
 
-const token = fs.readFileSync('/home/mmcmullen/.gh_pat', 'utf-8')
+const token = process.env["TOKEN"]
+const octokit = new Octokit({ auth:  token })
 
 async function gh_api(endpoint, parameters) {
     if (parameters === undefined) parameters = {}
@@ -17,7 +16,7 @@ async function gh_api(endpoint, parameters) {
     local_parameters["owner"] = 'mbmcmullen27'
     local_parameters["repo"] = 'azure-secrets'
 
-    return await github.request(endpoint, local_parameters)
+    return await octokit.request(endpoint, local_parameters)
 }
 
 async function create_secret(name, value, public_key) {
@@ -38,9 +37,8 @@ async function create_secret(name, value, public_key) {
     });
 }
 
-const credential = new DefaultAzureCredential({
-    managedIdentityClientId: "97859913-7708-4d7d-b743-620ce006d945"
-})
+
+const credential = new DefaultAzureCredential()
 const keyVaultName = "gh-secrets-awaited-quail"
 const url = "https://" + keyVaultName + ".vault.azure.net"
 const client = new SecretClient(url, credential)
