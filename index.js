@@ -4,7 +4,7 @@ const { Octokit } = require("@octokit/core");
 
 const sodium = require('libsodium-wrappers')
 
-const token = process.env["TOKEN"]
+const token = process.env.TOKEN
 const octokit = new Octokit({ auth:  token })
 
 async function gh_api(endpoint, parameters) {
