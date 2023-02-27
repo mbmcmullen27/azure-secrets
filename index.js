@@ -58,8 +58,7 @@ const client = new SecretClient(url, credential)
 
     console.log(secrets)
 
-    const key_response = await octokit.request.actions['getRepoPublicKey']
-    // gh_api('GET /repos/{owner}/{repo}/actions/secrets/public-key')
+    const key_response = await gh_api('GET /repos/{owner}/{repo}/actions/secrets/public-key')
     const repo_secrets = await gh_api('GET /repos/{owner}/{repo}/actions/secrets')
 
     console.log(repo_secrets.data)
