@@ -1,6 +1,6 @@
 
 
-name: Build and Push Images
+name: test azure login 
 
 on:
   push:
@@ -13,13 +13,15 @@ on:
   workflow_dispatch:
     
 jobs:
-  bundle:
+  azure:
     runs-on: ubuntu-latest
     steps:    
     - uses: actions/checkout@v3
 
     - name: Azure Login
       uses: Azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Run w/ Node
       run: node fetch.js
