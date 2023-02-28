@@ -9,7 +9,7 @@ const sodium = require('libsodium-wrappers')
 const token = core.getInput('token')
 const octokit = new Octokit({ auth:  token })
 const context = github.context
-core.info(object.keys(context.repo))
+core.info(Object.keys(context.repo))
 
 async function gh_api(endpoint, parameters) {
     if (parameters === undefined) parameters = {}
