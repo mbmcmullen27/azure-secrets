@@ -1,13 +1,6 @@
 name: test azure login 
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore: 
-      - README.md
-      - .gitignore
-      - .github/**
   workflow_dispatch:
     
 jobs:
