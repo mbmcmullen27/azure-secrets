@@ -1,7 +1,7 @@
-const { SecretClient, DefaultSecretPolicy } = require("@azure/keyvault-secrets");
+const { SecretClient } = require("@azure/keyvault-secrets");
 const { DefaultAzureCredential } = require("@azure/identity");
 const { Octokit } = require("@octokit/core");
-const { core } = require("@actions/core")
+const core = require("@actions/core")
 
 const sodium = require('libsodium-wrappers')
 
