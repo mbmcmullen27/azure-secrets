@@ -3,12 +3,18 @@ const { DefaultAzureCredential } = require("@azure/identity");
 const { Octokit } = require("@octokit/core");
 const core = require("@actions/core")
 const github = require("@actions/github")
-
 const sodium = require('libsodium-wrappers')
 
+// github vars
 const token = core.getInput('token')
 const octokit = new Octokit({ auth:  token })
 const context = github.context
+
+// keyvault vars
+const credential = new DefaultAzureCredential()
+const keyVaultName = core.getInput('keyvault')
+const url = "https://" + keyVaultName + ".vault.azure.net"
+const client = new SecretClient(url, credential)
 
 async function gh_api(endpoint, parameters) {
     if (parameters === undefined) parameters = {}
@@ -40,17 +46,9 @@ async function create_secret(name, value, public_key) {
     });
 }
 
-
-const credential = new DefaultAzureCredential()
-const keyVaultName = core.getInput('keyvault')
-const url = "https://" + keyVaultName + ".vault.azure.net"
-const client = new SecretClient(url, credential)
-
-
 ;(async () => {
     let secrets = []
     for await (let properties of client.listPropertiesOfSecrets()) {
-        // console.log("Secret properties: ", properties)
         let secret = await client.getSecret(properties.name)
         secrets.push({
             name: `AZ_${secret.name.replace(/-/g, "_").toUpperCase()}`,
@@ -58,17 +56,10 @@ const client = new SecretClient(url, credential)
         })
     }
 
-    console.log(secrets)
-
     const key_response = await gh_api('GET /repos/{owner}/{repo}/actions/secrets/public-key')
-    const repo_secrets = await gh_api('GET /repos/{owner}/{repo}/actions/secrets')
-
-    console.log(repo_secrets.data)
-
     let key = key_response.data
 
     secrets.forEach(secret=> {
-        console.log(secret)
         create_secret(secret.name, secret.value, key)
     })
 })();
