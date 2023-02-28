@@ -1,7 +1,5 @@
 name: test azure login 
 
-permissions: write-all
-
 on:
   push:
     branches:
