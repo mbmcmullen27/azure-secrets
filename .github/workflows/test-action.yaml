@@ -1,4 +1,4 @@
-name: test azure login 
+name: test secrets action
 
 on:
   workflow_dispatch:
