@@ -2,6 +2,7 @@ const { SecretClient } = require("@azure/keyvault-secrets");
 const { DefaultAzureCredential } = require("@azure/identity");
 const { Octokit } = require("@octokit/core");
 const core = require("@actions/core")
+const github = require("@actions/github")
 
 const sodium = require('libsodium-wrappers')
 
