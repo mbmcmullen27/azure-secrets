@@ -25,5 +25,5 @@ jobs:
 
     - name: Run w/ Node
       run: |
-        export TOKEN=${{ secrets.GITHUB_TOKEN }}
+        export TOKEN=${{ secrets.GH_PAT }}
         node index.js
