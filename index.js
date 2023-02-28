@@ -9,8 +9,6 @@ const sodium = require('libsodium-wrappers')
 const token = core.getInput('token')
 const octokit = new Octokit({ auth:  token })
 const context = github.context
-core.info(`repo: ${context.repo.repo}`)
-core.info(`owner: ${context.repo.owner}`)
 
 async function gh_api(endpoint, parameters) {
     if (parameters === undefined) parameters = {}
@@ -18,13 +16,11 @@ async function gh_api(endpoint, parameters) {
         ...parameters
     }
 
-    local_parameters["owner"] = 'mbmcmullen27'
-    local_parameters["repo"] = 'azure-secrets'
+    local_parameters["owner"] = context.repo.owner
+    local_parameters["repo"] = context.repo.repo
 
     return await octokit.request(endpoint, local_parameters)
 }
-
-
 
 async function create_secret(name, value, public_key) {
     sodium.ready.then(() => {
