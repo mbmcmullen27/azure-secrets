@@ -21,3 +21,4 @@ jobs:
         with:
           keyvault: gh-secrets-awaited-quail
           token: ${{ secrets.GH_PAT }}
+          pattern: [1-4]
