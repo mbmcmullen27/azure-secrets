@@ -7,6 +7,7 @@ const sodium = require('libsodium-wrappers')
 
 // github vars
 const token = core.getInput('token')
+const pattern = core.getInput('pattern')
 const octokit = new Octokit({ auth:  token })
 const context = github.context
 
@@ -50,10 +51,12 @@ async function create_secret(name, value, public_key) {
     let secrets = []
     for await (let properties of client.listPropertiesOfSecrets()) {
         let secret = await client.getSecret(properties.name)
-        secrets.push({
-            name: `AZ_${secret.name.replace(/-/g, "_").toUpperCase()}`,
-            value: secret.value
-        })
+        if(secret.name.match(pattern)){
+            secrets.push({
+                name: `AZ_${secret.name.replace(/-/g, "_").toUpperCase()}`,
+                value: secret.value
+            })
+        }
     }
 
     const key_response = await gh_api('GET /repos/{owner}/{repo}/actions/secrets/public-key')

@@ -4,11 +4,12 @@ inputs:
   keyvault: 
     description: 'Name of the key vault to fetch secrets from'
     required: true
-    default: 'none'
   token:
     description: 'Github PAT with public key and repo permissions'
     required: true
-    default: 'none'
+  pattern:
+    description: 'Pattern to select secrets by name'
+    required: false
 runs:
   using: 'node16'
   main: 'index.js'
