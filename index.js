@@ -52,12 +52,11 @@ async function create_secret(name, value, public_key) {
     for await (let properties of client.listPropertiesOfSecrets()) {
         let secret = await client.getSecret(properties.name)
         let reg = new RegExp(pattern)
-        core.info(pattern)
         if(reg.test(secret.name)){
             let name = `AZ_${secret.name.replace(/-/g, "_").toUpperCase()}`
             core.info(`storing secret: ${secret.name} as ${name}`)
             secrets.push({
-                name: `AZ_${secret.name.replace(/-/g, "_").toUpperCase()}`,
+                name: name,
                 value: secret.value
             })
         }
